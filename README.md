@@ -33,10 +33,7 @@ Run the following command to fetch the package:
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
-BASIC EMOJI PICKER
+## BASIC EMOJI PICKER
 
 ```dart
 
@@ -55,6 +52,50 @@ class EmojiPickerExample extends StatelessWidget {
     );
   }
 }
+
+//What It Does:
+//This code displays a simple emoji picker. When the user selects an emoji, it prints the emoji character to the console.
+
+```
+## Adding Custom Emoji Categories
+
+```dart 
+EmojiPicker(
+  categories: [
+    Category(
+      name: 'Favorites',
+      icon: Icons.star,
+      emojis: [
+        Emoji(char: '❤️', name: 'Heart'),
+        Emoji(char: '😂', name: 'Laugh'),
+        Emoji(char: '🔥', name: 'Fire'),
+      ],
+    ),
+    ...EmojiPickerCategories.defaultCategories,
+  ],
+  onEmojiSelected: (emoji) {
+    print('Selected: ${emoji.char}');
+  },
+);
+// What It Does:
+//Adds a custom Favorites category with hand-picked emojis alongside the default categories.
+``` 
+
+## Custom Styling
+Customize the emoji grid to match your app’s theme:
+
+```dart 
+
+EmojiPicker(
+  gridSpacing: 8.0,
+  emojiSize: 24.0,
+  backgroundColor: Colors.white,
+  categoryColor: Colors.blue,
+  selectedCategoryColor: Colors.red,
+);
+
+//What It Does:
+//Customizes the emoji picker with larger emojis, a white background, and blue highlighting for the selected category. The grid spacing is   increased for a more spacious layout.
 
 ```
 
