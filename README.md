@@ -11,8 +11,10 @@ and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/to/develop-packages).
 -->
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+Emoji Picker Package Documentation
+
+Overview
+The Emoji Picker package provides a customizable and lightweight grid of emojis that developers can easily integrate into their Flutter applications. It supports emoji categorization, searching, and styling to fit your app’s theme.
 
 ## Features
 
