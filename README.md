@@ -16,21 +16,46 @@ The Emoji Picker package provides a customizable and lightweight grid of emojis 
 1. Add the Dependency
 Add this line to your pubspec.yaml file:
 
+```yaml 
+
 dependencies:
   emoji_picker: ^1.0.0
-
+  
+```
 
 Run the following command to fetch the package: 
-  flutter pub get
 
+``` bash
+
+  flutter pub get
+  
+```
 
 ## Usage
 
 TODO: Include short and useful examples for package users. Add longer examples
 to `/example` folder.
 
+BASIC EMOJI PICKER
+
 ```dart
-const like = 'sample';
+
+import 'package:emoji_picker/emoji_picker.dart';
+
+class EmojiPickerExample extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Emoji Picker Example')),
+      body: EmojiPicker(
+        onEmojiSelected: (emoji) {
+          print('Selected Emoji: ${emoji.char}');
+        },
+      ),
+    );
+  }
+}
+
 ```
 
 ## Additional information
