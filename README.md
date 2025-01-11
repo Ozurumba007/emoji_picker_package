@@ -13,12 +13,15 @@ and the Flutter guide for
 
 Emoji Picker Package Documentation
 
-Overview
+## Overview
 The Emoji Picker package provides a customizable and lightweight grid of emojis that developers can easily integrate into their Flutter applications. It supports emoji categorization, searching, and styling to fit your app’s theme.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+1. Categorized emoji selection (e.g., smileys, animals, symbols, etc.).
+2. Built-in search bar for quick emoji filtering.
+3. Fully customizable grid layout (size, spacing, colors).
+4. Lightweight and efficient for all platforms (iOS, Android, Web).
 
 ## Getting started
 
