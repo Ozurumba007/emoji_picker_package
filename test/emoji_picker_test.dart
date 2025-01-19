@@ -1,3 +1,4 @@
+import 'package:emoji_picker/emoji_data.dart';
 import 'package:emoji_picker/emoji_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -43,7 +44,7 @@ void main() {
     testWidgets('should render EmojiPicker widget',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        EmojiPicker(
+        EmojiPickerPane(
           onEmojiSelected: (emoji) {
             expect(emoji.char, isNotNull);
             expect(emoji.name, isNotNull);
@@ -52,7 +53,7 @@ void main() {
       );
 
       // Simulate user interactions and test rendering logic
-      expect(find.byType(EmojiPicker), findsOneWidget);
+      expect(find.byType(EmojiPickerPane), findsOneWidget);
     });
   });
 }

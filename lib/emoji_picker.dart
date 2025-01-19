@@ -1,57 +1,8 @@
+import 'package:emoji_picker/emoji_data.dart';
 import 'package:flutter/material.dart';
 
-/// Emoji model to represent an emoji and its metadata.
-class Emoji {
-  final String char;
-  final String name;
-
-  Emoji({required this.char, required this.name});
-}
-
-/// Category model to represent an emoji category with a name, icon, and emojis.
-class Category {
-  final String name;
-  final IconData icon;
-  final List<Emoji> emojis;
-
-  Category({required this.name, required this.icon, required this.emojis});
-}
-
-/// Default categories with predefined emojis.
-class EmojiPickerCategories {
-  static final defaultCategories = [
-    Category(
-      name: 'Smileys',
-      icon: Icons.emoji_emotions,
-      emojis: [
-        Emoji(char: '😀', name: 'Grinning Face'),
-        Emoji(char: '😂', name: 'Face With Tears of Joy'),
-        Emoji(char: '😍', name: 'Heart Eyes'),
-      ],
-    ),
-    Category(
-      name: 'Animals',
-      icon: Icons.pets,
-      emojis: [
-        Emoji(char: '🐶', name: 'Dog'),
-        Emoji(char: '🐱', name: 'Cat'),
-        Emoji(char: '🐼', name: 'Panda'),
-      ],
-    ),
-    Category(
-      name: 'Symbols',
-      icon: Icons.emoji_symbols,
-      emojis: [
-        Emoji(char: '❤️', name: 'Heart'),
-        Emoji(char: '✨', name: 'Sparkles'),
-        Emoji(char: '🔥', name: 'Fire'),
-      ],
-    ),
-  ];
-}
-
 /// Main Emoji Picker widget.
-class EmojiPicker extends StatelessWidget {
+class EmojiPickerPane extends StatelessWidget {
   /// Callback triggered when an emoji is selected.
   final void Function(Emoji) onEmojiSelected;
 
@@ -73,7 +24,7 @@ class EmojiPicker extends StatelessWidget {
   /// Color of the selected category indicator.
   final Color selectedCategoryColor;
 
-  const EmojiPicker({
+  const EmojiPickerPane({
     super.key,
     required this.onEmojiSelected,
     this.categories,
@@ -86,8 +37,7 @@ class EmojiPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final emojiCategories =
-        categories ?? EmojiPickerCategories.defaultCategories;
+    final emojiCategories = categories ?? EmojiPickerData.defaultCategories;
 
     return DefaultTabController(
       length: emojiCategories.length,
@@ -134,6 +84,43 @@ class EmojiPicker extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class EmojiPicker {
+  //
+  static Future<void> pickEmoji(
+      {required BuildContext context,
+      required Function(Emoji) selectedEmoji}) async {
+    await showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return EmojiPickerPane(
+          onEmojiSelected: (Emoji emoji) {},
+        );
+      },
+    );
+  }
+
+  /// Function to get a list of all emojis from the default categories.
+  List<Emoji> getAllEmojis() {
+    return EmojiPickerData.defaultCategories
+        .expand((category) => category.emojis)
+        .toList();
+  }
+
+  /// Function to get a list of all categories.
+  List<Category> getAllCategories() {
+    return EmojiPickerData.defaultCategories;
+  }
+
+  // to return emoji view only
+  Widget getEmojiPane({required Function(Emoji) selectedEmoji}) {
+    return EmojiPickerPane(
+      onEmojiSelected: (Emoji emoji) {
+        selectedEmoji(emoji);
+      },
     );
   }
 }

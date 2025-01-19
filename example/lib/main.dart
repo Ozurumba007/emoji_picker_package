@@ -1,3 +1,4 @@
+import 'package:emoji_picker/emoji_data.dart';
 import 'package:emoji_picker/emoji_picker.dart';
 import 'package:flutter/material.dart';
 
@@ -37,7 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return EmojiPicker(
+        return EmojiPickerPane(
           onEmojiSelected: (Emoji emoji) {
             setState(() {
               _selectedEmoji = emoji; // Update the selected emoji
