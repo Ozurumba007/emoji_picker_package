@@ -1,42 +1,41 @@
-Emoji Picker Package Documentation
+# Emoji Picker
 
-## Overview
+The **Emoji Picker** package provides a lightweight, customizable grid of emojis for Flutter applications. Designed with flexibility and efficiency in mind, it allows developers to integrate emoji selection seamlessly into their apps, with support for categorization, custom styling, and user-defined categories.
 
-The Emoji Picker package provides a customizable and lightweight grid of emojis that developers can easily integrate into their Flutter applications. It supports emoji categorization, searching, and styling to fit your app’s theme.
+---
 
 ## Features
 
-1. Categorized emoji selection (e.g., smileys, animals, symbols, etc.).
-2. Built-in search bar for quick emoji filtering.
-3. Fully customizable grid layout (size, spacing, colors).
-4. Lightweight and efficient for all platforms (iOS, Android, Web).
+- Categorized emoji selection (e.g., smileys, animals, symbols).
+- Built-in options for custom emoji categories.
+- Customizable grid layout (size, spacing, colors).
+- Compatible with Flutter apps for iOS, Android, and Web.
+- Lightweight and efficient.
 
-## Getting started
+---
 
-1. Add the Dependency
-Add this line to your pubspec.yaml file:
+## Installation
 
-```yaml 
+Add the package to your `pubspec.yaml`:
 
+```yaml
 dependencies:
   emoji_picker: ^1.0.0
-  
 ```
 
-Run the following command to fetch the package: 
+Fetch the package:
 
-``` bash
-
-  flutter pub get
-  
+```bash
+flutter pub get
 ```
+
+---
 
 ## Usage
 
-## BASIC EMOJI PICKER
+### Basic Emoji Picker
 
 ```dart
-
 import 'package:emoji_picker/emoji_picker.dart';
 
 class EmojiPickerExample extends StatelessWidget {
@@ -44,81 +43,126 @@ class EmojiPickerExample extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Emoji Picker Example')),
-      body: EmojiPicker(
-        onEmojiSelected: (emoji) {
-          print('Selected Emoji: ${emoji.char}');
-        },
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            EmojiPicker.pickEmoji(
+              context: context,
+              selectedEmoji: (emoji) {
+                print('Selected Emoji: ${emoji.char}');
+              },
+            );
+          },
+          child: Text('Open Emoji Picker'),
+        ),
       ),
     );
   }
 }
-
-//What It Does:
-//This code displays a simple emoji picker. When the user selects an emoji, it prints the emoji character to the console.
-
 ```
-## Adding Custom Emoji Categories
 
-```dart 
+### Adding Custom Emoji Categories
+
+```dart
 EmojiPicker(
-  categories: [
-    Category(
-      name: 'Favorites',
-      icon: Icons.star,
-      emojis: [
-        Emoji(char: '❤️', name: 'Heart'),
-        Emoji(char: '😂', name: 'Laugh'),
-        Emoji(char: '🔥', name: 'Fire'),
-      ],
-    ),
-    ...EmojiPickerCategories.defaultCategories,
-  ],
+  config: EmojiViewConfig(
+    categories: [
+      EmojiCategory(
+        name: 'Favorites',
+        icon: Icons.star,
+        emojis: [
+          Emoji(char: '❤️', name: 'Heart'),
+          Emoji(char: '😂', name: 'Laugh'),
+          Emoji(char: '🔥', name: 'Fire'),
+        ],
+      ),
+    ],
+  ),
   onEmojiSelected: (emoji) {
-    print('Selected: ${emoji.char}');
+    print('Selected Emoji: ${emoji.char}');
   },
 );
-// What It Does:
-//Adds a custom Favorites category with hand-picked emojis alongside the default categories.
-``` 
-
-## Custom Styling
-Customize the emoji grid to match your app’s theme:
-
-```dart 
-
-EmojiPicker(
-  gridSpacing: 8.0,
-  emojiSize: 24.0,
-  backgroundColor: Colors.white,
-  categoryColor: Colors.blue,
-  selectedCategoryColor: Colors.red,
-);
-
-//What It Does:
-//Customizes the emoji picker with larger emojis, a white background, and blue highlighting for the selected category. The grid spacing is   increased for a more spacious layout.
-
 ```
 
-## Additional information
+### Custom Styling
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+```dart
+EmojiPicker(
+  config: EmojiViewConfig(
+    gridSpacing: 8.0,
+    emojiSize: 24.0,
+    backgroundColor: Colors.white,
+    categoryColor: Colors.grey,
+    selectedCategoryColor: Colors.blue,
+  ),
+  onEmojiSelected: (emoji) {
+    print('Selected Emoji: ${emoji.char}');
+  },
+);
+```
 
-## About the Package
-This package provides a robust and customizable Emoji Picker widget for Flutter, enabling developers to integrate emoji selection functionality into their apps effortlessly. Whether you're building a chat app, social platform, or any app requiring emojis, this package is a lightweight and flexible solution.
+---
+
+## API Reference
+
+### Main Widget: `EmojiPicker`
+
+| Property              | Type                              | Description                                    |
+|-----------------------|-----------------------------------|------------------------------------------------|
+| `onEmojiSelected`     | `void Function(Emoji)`           | Callback triggered when an emoji is selected. |
+| `config`              | `EmojiViewConfig?`               | Configuration for customizing the emoji picker layout. |
+
+### Utility Functions:
+
+#### `EmojiPicker.pickEmoji`
+
+Displays a bottom sheet with an emoji picker.
+
+```dart
+EmojiPicker.pickEmoji(
+  context: context,
+  selectedEmoji: (Emoji emoji) {
+    // Handle selected emoji
+  },
+);
+```
+
+#### `EmojiPicker.getAllEmojis`
+
+Returns a list of all emojis across default categories:
+
+```dart
+List<Emoji> allEmojis = EmojiPicker.getAllEmojis;
+```
+
+#### `EmojiPicker.getAllEmojiCategories`
+
+Returns a list of all default emoji categories:
+
+```dart
+List<EmojiCategory> allCategories = EmojiPicker.getAllEmojiCategories;
+```
+
+---
+
+## Additional Information
+
+For more details on customization and integration, refer to the [documentation](https://pub.dev/packages/emoji_picker) or the [GitHub repository](https://github.com/your-repo-url).
+
+---
 
 ## Contributing
- We welcome contributions from the community! Here’s how you can get involved:
 
-1. Fork the repository on GitHub.
-2. Create a new branch for your feature or bug fix.
-3. Submit a pull request with a detailed description of the changes.
+Contributions are welcome! To contribute:
 
-    Before submitting, please ensure:
+1. Fork the repository.
+2. Create a new branch for your changes.
+3. Submit a pull request with a detailed description of your updates.
 
-1. Your code adheres to Flutter and Dart style guidelines.
-2. Tests are included for any new functionality.
+Ensure your code adheres to Dart and Flutter best practices, and include tests for any new functionality.
+
+---
 
 ## Acknowledgments
-Special thanks to the Flutter community for their inspiration and contributions. If you’ve found this package helpful, please consider giving it a star on GitHub or leaving a review on pub.dev. 
+
+A special thanks to the Flutter community for their support and inspiration. If you find this package helpful, please consider giving it a star on GitHub or leaving a review on [pub.dev](https://pub.dev/packages/emoji_picker).
