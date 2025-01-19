@@ -1,3 +1,4 @@
+import 'package:emoji_picker/config.dart';
 import 'package:emoji_picker/emoji_data.dart';
 import 'package:flutter/material.dart';
 
@@ -6,40 +7,21 @@ class EmojiPickerPane extends StatelessWidget {
   /// Callback triggered when an emoji is selected.
   final void Function(Emoji) onEmojiSelected;
 
-  /// Optional custom categories for the emoji picker.
-  final List<EmojiCategory>? categories;
-
-  /// Grid spacing between emojis.
-  final double gridSpacing;
-
-  /// Size of each emoji.
-  final double emojiSize;
-
-  /// Background color of the emoji picker.
-  final Color backgroundColor;
-
-  /// Color of the category tab bar.
-  final Color categoryColor;
-
-  /// Color of the selected category indicator.
-  final Color selectedCategoryColor;
+  /// Configuration for the emoji picker view.
+  final EmojiViewConfig? config;
 
   const EmojiPickerPane({
     super.key,
     required this.onEmojiSelected,
-    this.categories,
-    this.gridSpacing = 4.0,
-    this.emojiSize = 20.0,
-    this.backgroundColor = Colors.white,
-    this.categoryColor = Colors.grey,
-    this.selectedCategoryColor = Colors.blue,
+    this.config, // Now nullable
   });
 
   @override
   Widget build(BuildContext context) {
+    // Default values if config is null
     final emojiCategories = [
       ...EmojiPickerData.defaultCategories,
-      ...?categories
+      ...(config?.categories ?? []),
     ];
 
     return DefaultTabController(
@@ -47,25 +29,25 @@ class EmojiPickerPane extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            color: categoryColor,
+            color: config?.categoryColor ?? Colors.grey,
             child: TabBar(
               tabs: emojiCategories
                   .map((category) => Tab(icon: Icon(category.icon)))
                   .toList(),
-              indicatorColor: selectedCategoryColor,
+              indicatorColor: config?.selectedCategoryColor ?? Colors.blue,
             ),
           ),
           Expanded(
             child: Container(
-              color: backgroundColor,
+              color: config?.backgroundColor ?? Colors.white,
               child: TabBarView(
                 children: emojiCategories.map((category) {
                   return GridView.builder(
                     padding: const EdgeInsets.all(8.0),
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 6,
-                      crossAxisSpacing: gridSpacing,
-                      mainAxisSpacing: gridSpacing,
+                      crossAxisSpacing: config?.gridSpacing ?? 4.0,
+                      mainAxisSpacing: config?.gridSpacing ?? 4.0,
                     ),
                     itemCount: category.emojis.length,
                     itemBuilder: (context, index) {
@@ -75,7 +57,8 @@ class EmojiPickerPane extends StatelessWidget {
                         child: Center(
                           child: Text(
                             emoji.char,
-                            style: TextStyle(fontSize: emojiSize),
+                            style:
+                                TextStyle(fontSize: config?.emojiSize ?? 20.0),
                           ),
                         ),
                       );
@@ -114,13 +97,15 @@ class EmojiPicker {
   }
 
   /// Function to get a list of all categories.
-  static List<EmojiCategory> getAllEmojiCategories() {
+  static List<EmojiCategory> get getAllEmojiCategories {
     return EmojiPickerData.defaultCategories;
   }
 
   // to return emoji view only
-  Widget getEmojiPane({required Function(Emoji) selectedEmoji}) {
+  Widget getEmojiPane(
+      {EmojiViewConfig? config, required Function(Emoji) selectedEmoji}) {
     return EmojiPickerPane(
+      config: config,
       onEmojiSelected: (Emoji emoji) {
         selectedEmoji(emoji);
       },

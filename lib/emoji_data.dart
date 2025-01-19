@@ -5,7 +5,10 @@ class Emoji {
   final String char;
   final String name;
 
-  Emoji({required this.char, required this.name});
+  Emoji({
+    required this.char,
+    required this.name,
+  });
 }
 
 /// Category model to represent an emoji category with a name, icon, and emojis.

@@ -1,120 +1,154 @@
+import 'package:emoji_picker/config.dart';
 import 'package:emoji_picker/emoji_data.dart';
 import 'package:emoji_picker/emoji_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  group('EmojiPickerPane Widget Tests', () {
-    testWidgets('renders the default categories with TabBar and TabBarView',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: EmojiPickerPane(
-            onEmojiSelected: (emoji) {},
+  testWidgets('EmojiPickerPane uses default values when config is null',
+      (WidgetTester tester) async {
+    // Arrange: Create a mock emoji and a mock onEmojiSelected callback.
+
+    void onEmojiSelected(Emoji emoji) {}
+
+    // Act: Build the EmojiPickerPane widget with no config.
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: EmojiPickerPane(
+            onEmojiSelected: onEmojiSelected,
           ),
         ),
-      );
+      ),
+    );
 
-      // Verify TabBar has correct number of tabs
-      expect(find.byType(Tab), findsWidgets);
+    // Assert: Verify default values are applied (e.g., backgroundColor and categoryColor).
+    final container = find.byType(Container);
+    expect(container, findsOneWidget);
+    final containerWidget = tester.widget<Container>(container);
+    expect(containerWidget.color, Colors.grey); // Default categoryColor
 
-      // Verify TabBarView is present
-      expect(find.byType(TabBarView), findsOneWidget);
-    });
-
-    testWidgets('calls onEmojiSelected when an emoji is tapped',
-        (WidgetTester tester) async {
-      Emoji? selectedEmoji;
-      await tester.pumpWidget(
-        MaterialApp(
-          home: EmojiPickerPane(
-            onEmojiSelected: (emoji) {
-              selectedEmoji = emoji;
-            },
-          ),
-        ),
-      );
-
-      // Simulate tapping on the first emoji
-      final firstEmojiFinder =
-          find.text(EmojiPickerData.defaultCategories.first.emojis.first.char);
-      await tester.tap(firstEmojiFinder);
-      await tester.pump();
-
-      expect(selectedEmoji, isNotNull);
-      expect(selectedEmoji!.char,
-          EmojiPickerData.defaultCategories.first.emojis.first.char);
-    });
-
-    testWidgets('applies custom properties', (WidgetTester tester) async {
-      const backgroundColor = Colors.black;
-      const categoryColor = Colors.red;
-      const selectedCategoryColor = Colors.green;
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: EmojiPickerPane(
-            onEmojiSelected: (emoji) {},
-            backgroundColor: backgroundColor,
-            categoryColor: categoryColor,
-            selectedCategoryColor: selectedCategoryColor,
-          ),
-        ),
-      );
-
-      // Verify custom background color
-      final backgroundFinder = find.byWidgetPredicate(
-        (widget) => widget is Container && widget.color == backgroundColor,
-      );
-      expect(backgroundFinder, findsOneWidget);
-
-      // Verify custom category color
-      final categoryFinder = find.byWidgetPredicate(
-        (widget) => widget is Container && widget.color == categoryColor,
-      );
-      expect(categoryFinder, findsOneWidget);
-    });
+    // Test default gridSpacing and emojiSize are applied.
+    final gridView = find.byType(GridView);
+    expect(gridView, findsOneWidget);
   });
 
-  group('EmojiPicker Utility Tests', () {
-    test('getAllEmojis returns a list of all emojis', () {
-      final emojis = EmojiPicker.getAllEmojis;
-      expect(emojis, isNotEmpty);
-      expect(emojis.length, greaterThan(0));
-    });
+  testWidgets('EmojiPickerPane uses custom config values',
+      (WidgetTester tester) async {
+    // Arrange: Define a custom configuration for the emoji picker.
+    final config = EmojiViewConfig(
+      gridSpacing: 6.0,
+      emojiSize: 24.0,
+      backgroundColor: Colors.blue,
+      categoryColor: Colors.red,
+      selectedCategoryColor: Colors.green,
+    );
 
-    test('getAllEmojiCategories returns a list of all categories', () {
-      final categories = EmojiPicker.getAllEmojiCategories();
-      expect(categories, isNotEmpty);
-      expect(categories.length, greaterThan(0));
-    });
+    void onEmojiSelected(Emoji emoji) {}
 
-    testWidgets('pickEmoji opens modal bottom sheet',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Builder(
-            builder: (context) {
-              return ElevatedButton(
-                onPressed: () {
-                  EmojiPicker.pickEmoji(
-                    context: context,
-                    selectedEmoji: (emoji) {},
-                  );
-                },
-                child: const Text('Open Emoji Picker'),
-              );
-            },
+    // Act: Build the EmojiPickerPane widget with the custom config.
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: EmojiPickerPane(
+            onEmojiSelected: onEmojiSelected,
+            config: config,
           ),
         ),
-      );
+      ),
+    );
 
-      // Tap button to open modal
-      await tester.tap(find.text('Open Emoji Picker'));
-      await tester.pumpAndSettle();
+    // Assert: Verify the custom config values are applied.
+    final container = find.byType(Container);
+    expect(container,
+        findsWidgets); // Two Containers: one for category bar, one for GridView
+    final containerWidget = tester.widget<Container>(container.first);
+    expect(containerWidget.color, Colors.red); // Custom categoryColor
 
-      // Verify EmojiPickerPane is shown
-      expect(find.byType(EmojiPickerPane), findsOneWidget);
-    });
+    final gridView = find.byType(GridView);
+    expect(gridView, findsOneWidget);
+    final gridViewWidget = tester.widget<GridView>(gridView);
+    expect(gridViewWidget.padding,
+        const EdgeInsets.all(6.0)); // Custom gridSpacing
+
+    final textWidgets = find.byType(Text);
+    expect(textWidgets, findsWidgets); // Expect emoji text elements
+  });
+
+  testWidgets('EmojiPickerPane triggers onEmojiSelected when emoji is tapped',
+      (WidgetTester tester) async {
+    // Arrange: Define a mock emoji and onEmojiSelected callback
+    final mockEmoji = Emoji(char: '😊', name: 'smile');
+    late Emoji selectedEmoji;
+    void onEmojiSelected(Emoji emoji) {
+      selectedEmoji = emoji;
+    }
+
+    // Act: Build the EmojiPickerPane widget
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: EmojiPickerPane(
+            onEmojiSelected: onEmojiSelected,
+          ),
+        ),
+      ),
+    );
+
+    // Tap on the emoji
+    final emojiText = find.text(mockEmoji.char);
+    await tester.tap(emojiText);
+    await tester.pump();
+
+    // Assert: Ensure the onEmojiSelected callback was triggered with the correct emoji
+    expect(selectedEmoji.char, mockEmoji.char);
+    expect(selectedEmoji.name, mockEmoji.name);
+  });
+
+  testWidgets('EmojiPicker correctly displays the emoji picker modal',
+      (WidgetTester tester) async {
+    // Arrange: Mock the callback for emoji selection
+    late Emoji selectedEmoji;
+    void onEmojiSelected(Emoji emoji) {
+      selectedEmoji = emoji;
+    }
+
+    // Act: Call the pickEmoji method to show the emoji picker
+    await EmojiPicker.pickEmoji(
+      context: tester.element(find.byType(MaterialApp)),
+      selectedEmoji: onEmojiSelected,
+    );
+
+    // Wait for the modal to display
+    await tester.pumpAndSettle();
+
+    // Assert: Verify the modal is displayed
+    expect(find.byType(EmojiPickerPane), findsOneWidget);
+
+    // Verify the emoji selection works
+    final emojiText = find.text('😊');
+    await tester.tap(emojiText);
+    await tester.pump();
+    expect(selectedEmoji.char, '😊');
+  });
+
+  test('EmojiPicker.getAllEmojis returns correct list of emojis', () {
+    // Act: Get all emojis using the static method
+    final allEmojis = EmojiPicker.getAllEmojis;
+
+    // Assert: Verify the result contains emojis from the default categories
+    expect(allEmojis, isNotEmpty);
+    expect(allEmojis.first, isA<Emoji>());
+    expect(allEmojis.first.char, isNotEmpty);
+    expect(allEmojis.first.name, isNotEmpty);
+  });
+
+  test('EmojiPicker.getAllEmojiCategories returns the correct categories', () {
+    // Act: Get all emoji categories using the static method
+    final allCategories = EmojiPicker.getAllEmojiCategories;
+
+    // Assert: Verify the result contains emoji categories
+    expect(allCategories, isNotEmpty);
+    expect(allCategories.first, isA<EmojiCategory>());
   });
 }

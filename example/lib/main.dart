@@ -33,6 +33,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Emoji? _selectedEmoji; // Store the selected emoji
+  List<Emoji>? allEmojis;
 
   void _showEmojiPicker() {
     EmojiPicker.pickEmoji(
@@ -44,12 +45,19 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
-  List<Emoji> getAllEmojis() {
-    return EmojiPicker.getAllEmojis;
+  getAllEmojis() {
+    allEmojis = EmojiPicker.getAllEmojis;
+    setState(() {});
   }
 
   List<EmojiCategory> getAllEmojisCategories() {
-    return EmojiPicker.getAllEmojiCategories();
+    return EmojiPicker.getAllEmojiCategories;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getAllEmojis();
   }
 
   @override
@@ -61,17 +69,46 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('Selected Emoji:'),
-            Text(
-              _selectedEmoji?.char ?? "",
-              style: Theme.of(context).textTheme.headlineMedium,
+          children: [
+            SizedBox(
+              height: 20,
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _showEmojiPicker,
-              child: const Text('Show Emoji Picker'),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const Text('Open Emoji pane'),
+                Text(
+                  _selectedEmoji?.char ?? "",
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _showEmojiPicker,
+                  child: const Text('Show Emoji Picker'),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const Text('All Emojis'),
+                Text(
+                  _selectedEmoji?.char ?? "",
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      for (final emoji in allEmojis ?? []) ...[Text(emoji.char)]
+                    ],
+                  ),
+                )
+              ],
             ),
           ],
         ),
