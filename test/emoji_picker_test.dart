@@ -5,54 +5,115 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('EmojiPicker Tests', () {
-    test('should create an emoji', () {
-      final emoji = Emoji(char: '❤️', name: 'Heart');
-      expect(emoji.char, '❤️');
-      expect(emoji.name, 'Heart');
+    test('getAllEmojis returns all emojis', () {
+      final emojiPicker = EmojiPicker();
+      final emojis = emojiPicker.getAllEmojis();
+
+      // Assert the number of emojis is correct.
+      expect(
+          emojis.length,
+          EmojiPickerData.defaultCategories
+              .expand((category) => category.emojis)
+              .length);
+
+      // Assert specific emojis are in the result.
+      expect(emojis.any((emoji) => emoji.char == '😀'), isTrue);
+      expect(emojis.any((emoji) => emoji.char == '❤️'), isTrue);
     });
 
-    test('should create a custom category', () {
-      final category = Category(
-        name: 'Favorites',
-        icon: Icons.star,
-        emojis: [
-          Emoji(char: '❤️', name: 'Heart'),
-          Emoji(char: '😂', name: 'Laugh'),
-        ],
-      );
-      expect(category.name, 'Favorites');
-      expect(category.emojis.length, 2);
-      expect(category.emojis[0].char, '❤️');
+    test('getAllCategories returns all categories', () {
+      final emojiPicker = EmojiPicker();
+      final categories = emojiPicker.getAllCategories();
+
+      // Assert the number of categories is correct.
+      expect(categories.length, EmojiPickerData.defaultCategories.length);
+
+      // Assert specific categories are in the result.
+      expect(categories.any((category) => category.name == 'Smileys'), isTrue);
+      expect(categories.any((category) => category.name == 'Animals'), isTrue);
     });
 
-    test('should filter emojis using search functionality', () {
-      final allEmojis = [
-        Emoji(char: '❤️', name: 'Heart'),
-        Emoji(char: '😂', name: 'Laugh'),
-        Emoji(char: '🔥', name: 'Fire'),
-      ];
-      final searchTerm = 'Laugh';
-      final filteredEmojis = allEmojis
-          .where((emoji) =>
-              emoji.name.toLowerCase().contains(searchTerm.toLowerCase()))
-          .toList();
-
-      expect(filteredEmojis.length, 1);
-      expect(filteredEmojis[0].name, 'Laugh');
-    });
-
-    testWidgets('should render EmojiPicker widget',
+    testWidgets('EmojiPickerPane displays emojis for selected category',
         (WidgetTester tester) async {
+      // Create a mock onEmojiSelected callback.
+      mockOnEmojiSelected(Emoji emoji) {}
+
+      // Build the widget.
       await tester.pumpWidget(
-        EmojiPickerPane(
-          onEmojiSelected: (emoji) {
-            expect(emoji.char, isNotNull);
-            expect(emoji.name, isNotNull);
-          },
+        MaterialApp(
+          home: Scaffold(
+            body: EmojiPickerPane(onEmojiSelected: mockOnEmojiSelected),
+          ),
         ),
       );
 
-      // Simulate user interactions and test rendering logic
+      // Ensure default categories are rendered as tabs.
+      expect(find.byType(Tab),
+          findsNWidgets(EmojiPickerData.defaultCategories.length));
+
+      // Tap the first tab (Smileys).
+      await tester.tap(find.byType(Tab).first);
+      await tester.pumpAndSettle();
+
+      // Check if the emojis in the first category are displayed.
+      for (final emoji in EmojiPickerData.defaultCategories[0].emojis) {
+        expect(find.text(emoji.char), findsOneWidget);
+      }
+    });
+
+    testWidgets('EmojiPickerPane invokes onEmojiSelected callback on emoji tap',
+        (WidgetTester tester) async {
+      // Mock a variable to track which emoji was selected.
+      Emoji? selectedEmoji;
+
+      // Build the widget with a callback to set the selected emoji.
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: EmojiPickerPane(
+              onEmojiSelected: (emoji) => selectedEmoji = emoji,
+            ),
+          ),
+        ),
+      );
+
+      // Tap the first emoji in the first category.
+      await tester
+          .tap(find.text(EmojiPickerData.defaultCategories[0].emojis[0].char));
+      await tester.pumpAndSettle();
+
+      // Assert the correct emoji was selected.
+      expect(selectedEmoji, isNotNull);
+      expect(selectedEmoji?.char,
+          EmojiPickerData.defaultCategories[0].emojis[0].char);
+    });
+
+    testWidgets('EmojiPicker.pickEmoji displays EmojiPickerPane',
+        (WidgetTester tester) async {
+      // Build a MaterialApp with a Scaffold.
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Builder(
+              builder: (context) => ElevatedButton(
+                onPressed: () {
+                  EmojiPicker.pickEmoji(
+                    context: context,
+                    selectedEmoji: (_) {},
+                  );
+                },
+                child: const Text('Show Emoji Picker'),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      // Tap the button to show the Emoji Picker.
+      await tester.tap(find.text('Show Emoji Picker'));
+      await tester.pumpAndSettle();
+
+      // Assert the EmojiPickerPane is displayed.
       expect(find.byType(EmojiPickerPane), findsOneWidget);
     });
   });
