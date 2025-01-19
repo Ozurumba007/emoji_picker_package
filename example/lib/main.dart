@@ -35,18 +35,21 @@ class _MyHomePageState extends State<MyHomePage> {
   Emoji? _selectedEmoji; // Store the selected emoji
 
   void _showEmojiPicker() {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return EmojiPickerPane(
-          onEmojiSelected: (Emoji emoji) {
-            setState(() {
-              _selectedEmoji = emoji; // Update the selected emoji
-            });
-          },
-        );
-      },
-    );
+    EmojiPicker.pickEmoji(
+        context: context,
+        selectedEmoji: (emoji) {
+          setState(() {
+            _selectedEmoji = emoji;
+          });
+        });
+  }
+
+  List<Emoji> getAllEmojis() {
+    return EmojiPicker.getAllEmojis;
+  }
+
+  List<EmojiCategory> getAllEmojisCategories() {
+    return EmojiPicker.getAllEmojiCategories();
   }
 
   @override

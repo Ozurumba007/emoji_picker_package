@@ -7,7 +7,7 @@ class EmojiPickerPane extends StatelessWidget {
   final void Function(Emoji) onEmojiSelected;
 
   /// Optional custom categories for the emoji picker.
-  final List<Category>? categories;
+  final List<EmojiCategory>? categories;
 
   /// Grid spacing between emojis.
   final double gridSpacing;
@@ -37,7 +37,10 @@ class EmojiPickerPane extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final emojiCategories = categories ?? EmojiPickerData.defaultCategories;
+    final emojiCategories = [
+      ...EmojiPickerData.defaultCategories,
+      ...?categories
+    ];
 
     return DefaultTabController(
       length: emojiCategories.length,
@@ -104,14 +107,14 @@ class EmojiPicker {
   }
 
   /// Function to get a list of all emojis from the default categories.
-  List<Emoji> getAllEmojis() {
+  static List<Emoji> get getAllEmojis {
     return EmojiPickerData.defaultCategories
         .expand((category) => category.emojis)
         .toList();
   }
 
   /// Function to get a list of all categories.
-  List<Category> getAllCategories() {
+  static List<EmojiCategory> getAllEmojiCategories() {
     return EmojiPickerData.defaultCategories;
   }
 

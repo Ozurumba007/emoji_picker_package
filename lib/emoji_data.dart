@@ -9,18 +9,18 @@ class Emoji {
 }
 
 /// Category model to represent an emoji category with a name, icon, and emojis.
-class Category {
+class EmojiCategory {
   final String name;
   final IconData icon;
   final List<Emoji> emojis;
 
-  Category({required this.name, required this.icon, required this.emojis});
+  EmojiCategory({required this.name, required this.icon, required this.emojis});
 }
 
 /// Default categories with predefined emojis.
 class EmojiPickerData {
   static final defaultCategories = [
-    Category(
+    EmojiCategory(
       name: 'Smileys',
       icon: Icons.emoji_emotions,
       emojis: [
@@ -29,7 +29,7 @@ class EmojiPickerData {
         Emoji(char: '😍', name: 'Heart Eyes'),
       ],
     ),
-    Category(
+    EmojiCategory(
       name: 'Animals',
       icon: Icons.pets,
       emojis: [
@@ -38,7 +38,7 @@ class EmojiPickerData {
         Emoji(char: '🐼', name: 'Panda'),
       ],
     ),
-    Category(
+    EmojiCategory(
       name: 'Symbols',
       icon: Icons.emoji_symbols,
       emojis: [
