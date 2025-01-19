@@ -1,5 +1,5 @@
 name: emoji_picker
-description: "A new Flutter package project."
+description: "A flutter package that allows you to make you of a set of emojis to enhance typing experience for your users"
 version: 0.0.1
 homepage:
 
@@ -15,6 +15,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  test: ^1.25.8
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
