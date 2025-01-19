@@ -52,12 +52,25 @@ class EmojiPickerCategories {
 
 /// Main Emoji Picker widget.
 class EmojiPicker extends StatelessWidget {
-  final Function(Emoji) onEmojiSelected;
+  /// Callback triggered when an emoji is selected.
+  final void Function(Emoji) onEmojiSelected;
+
+  /// Optional custom categories for the emoji picker.
   final List<Category>? categories;
+
+  /// Grid spacing between emojis.
   final double gridSpacing;
+
+  /// Size of each emoji.
   final double emojiSize;
+
+  /// Background color of the emoji picker.
   final Color backgroundColor;
+
+  /// Color of the category tab bar.
   final Color categoryColor;
+
+  /// Color of the selected category indicator.
   final Color selectedCategoryColor;
 
   const EmojiPicker({
@@ -75,6 +88,7 @@ class EmojiPicker extends StatelessWidget {
   Widget build(BuildContext context) {
     final emojiCategories =
         categories ?? EmojiPickerCategories.defaultCategories;
+
     return DefaultTabController(
       length: emojiCategories.length,
       child: Column(
