@@ -30,6 +30,12 @@ class EmojiPickerData {
         Emoji(char: '😀', name: 'Grinning Face'),
         Emoji(char: '😂', name: 'Face With Tears of Joy'),
         Emoji(char: '😍', name: 'Heart Eyes'),
+        Emoji(char: '😎', name: 'Smiling Face with Sunglasses'),
+        Emoji(char: '🤗', name: 'Hugging Face'),
+        Emoji(char: '🤔', name: 'Thinking Face'),
+        Emoji(char: '🤐', name: 'Zipper-Mouth Face'),
+        Emoji(char: '😴', name: 'Sleeping Face'),
+        Emoji(char: '🤯', name: 'Exploding Head'),
       ],
     ),
     EmojiCategory(
